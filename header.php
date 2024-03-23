@@ -5,10 +5,16 @@ if ($_SESSION['username']){
 
 <html>
     <style>
+        html *
+{
+   font-family: Tahoma !important;
+}       
+
         .content{
             margin: auto;
             width: 50%;
             text-align: center;
+            position: relative;
         }
         body {
     background-image: url("src/bg.png");
