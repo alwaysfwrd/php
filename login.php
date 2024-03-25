@@ -3,10 +3,8 @@
 <head>
     <title>Login</title>
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" type="image/x-icon" href="shop/favicon.ico">
 
-<head>
-    <title>Login</title>
-    <link rel="stylesheet" href="styles/style.css">
 </head>
 
 
@@ -17,33 +15,42 @@
             <label>Password:</label><input type="password" name="password" class="username"><br>
             <input type="submit" name="submit" value="Submit" class="button">
         </form>
+
     </div>
-    <script>
-        const currentUrl = window.location.href;
-        var wait = (ms) => {
-            const start = Date.now();
-            let now = start;
-            while (now - start < ms) {
-                now = Date.now();
-            }
-        }
-        document.querySelector(".button")
-            .addEventListener("click", function () {
-                var isLoggedIn = <?php echo isset ($_SESSION["username"]) ? 'true' : 'false'; ?>;
-                if (isLoggedIn) {
-                    if (currentUrl == "http://localhost/php/login.php") {
-                        alert("Incorrect Password or Username!");
-                        location.reload();
-
-                    }
+    <?php
+    session_start();
+    $username = @$_POST['username'];
+    $password = @$_POST['password'];
+    require ("connect.php");
+    if (isset ($_POST['submit'])) {
+        if (!empty ($username) && $password) {
+            $check = "select * from users where username = '$username'";
+            $result = $conn->query($check);
+            $rows = mysqli_num_rows($result);
+            if ($rows != 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $db_username = $row['username'];
+                    $db_password = $row['password'];
                 }
+                if ($username == $db_username && $password == $db_password) {
+                    echo "logged in";
+                    @$_SESSION["username"] = $username;
+                    header("Location: index.php");
+                } else {
+                    echo "nem jo";
+                }
+            } else {
+                echo "not found";
+            }
+        } else {
+            echo "pease fill in all the fields";
+        }
+    }
+    session_destroy();
 
-            });
-
-
-
-    </script>
+    ?>
 </body>
+
 <style>
     body {
         background-image: url("src/bg.png");
@@ -85,7 +92,7 @@
     }
 
     label {
-
+        border-radius: 25px;
         float: left;
         clear: left;
         text-align: center;
@@ -101,9 +108,11 @@
     .username {
         width: 100%;
         line-height: 20px;
+        border-radius: 25px;
     }
 
-    @media (pointer:none),(pointer:coarse) {
+    @media (pointer:none),
+    (pointer:coarse) {
         min-height: 50%;
         min-width: 50%;
     }
@@ -124,62 +133,4 @@
 
 
 
-
-    </html>
-    <?php
-    session_start();
-    $username = @$_POST['username'];
-    $password = @$_POST['password'];
-    require ("connect.php");
-
-    if (isset ($_POST['submit'])) {
-        if (!empty ($username) && $password) {
-            $check = "select * from users where username = '$username'";
-            $result = $conn->query($check);
-            $rows = mysqli_num_rows($result);
-            if ($rows != 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $db_username = $row['username'];
-                    $db_password = $row['password'];
-                }
-                if ($username == $db_username && $password == $db_password) {
-                    echo "logged in";
-                    @$_SESSION["username"] = $username;
-                    header("Location: index.php");
-                } else {
-                    echo "<html><script>alert('Incorrect Password!');</script></html>";
-
-                }
-            } else {
-                echo "not found";
-    if (isset ($_POST['submit'])) {
-        if (!empty ($username) && $password) {
-            $check = "select * from users where username = '$username'";
-            $result = $conn->query($check);
-            $rows = mysqli_num_rows($result);
-            if ($rows != 0) {
-                while ($row = mysqli_fetch_assoc($result)) {
-                    $db_username = $row['username'];
-                    $db_password = $row['password'];
-                }
-                if ($username == $db_username && $password == $db_password) {
-                    echo "logged in";
-                    @$_SESSION["username"] = $username;
-                    header("Location: index.php");
-                } else {
-                    echo "<html><script>alert('Incorrect Password!');</script></html>";
-
-                }
-            } else {
-                echo "not found";
-            }
-        } else {
-            echo "pease fill in all the fields";
-        }
-    }
-    ?>
-        } else {
-            echo "pease fill in all the fields";
-        }
-    }
-    ?>
+    <style></html>
